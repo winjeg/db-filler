@@ -9,7 +9,7 @@ import (
 )
 
 func TestFileStore_Append(t *testing.T) {
-	fs, err := NewFileStore("a.txt", lock)
+	fs, err := NewFileStore("a.txt", &lock)
 	assert.NotNil(t, fs)
 	assert.Nil(t, err)
 

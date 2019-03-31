@@ -16,17 +16,17 @@ var (
 	sqlFileLock   = sync.Mutex{}
 
 	// none nil values should prove this is enabled
-	ErrorFileStore, _ = NewFileStore(conf.ExtraSettings.ErrorFile, errorFileLock)
-	SqlFileStore, _   = NewFileStore(conf.ExtraSettings.SqlFile, sqlFileLock)
+	ErrorFileStore, _ = NewFileStore(conf.ExtraSettings.ErrorFile, &errorFileLock)
+	SqlFileStore, _   = NewFileStore(conf.ExtraSettings.SqlFile, &sqlFileLock)
 )
 
 type fileStore struct {
 	File *os.File
-	Lock sync.Mutex
+	Lock *sync.Mutex
 }
 
 // new file store, we only need to append to current file
-func NewFileStore(file string, lock sync.Mutex) (*fileStore, error) {
+func NewFileStore(file string, lock *sync.Mutex) (*fileStore, error) {
 	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
 	if err != nil {
 		return nil, err
