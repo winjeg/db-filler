@@ -17,7 +17,21 @@ with the program you can fill a table rapidly and easily.
 5. save the execution error into a user defined file
 6. only do insert sql generation, and don't do insertion
 
+
+
 ## how to use
+
+### Get it 
+```
+go get github.com/winjeg/db-filler
+```
+
+### build it
+```bash
+git clone https://github.com/winjeg/db-filler
+cd db-filler
+go build .
+```
 
 ### command line usage
 use `db-filer -h` to view the help content below
