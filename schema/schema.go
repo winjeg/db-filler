@@ -95,6 +95,7 @@ type TableDefinition struct {
 	Extra     TableExtra   `json:"extra"`
 }
 
+// get whole table definition from database
 func (ss *schemaService) GetTableDefinition(myDb *sql.DB, tableName, dbName string) TableDefinition {
 	return TableDefinition{
 		TableName: tableName,
@@ -125,6 +126,7 @@ func (*schemaService) GetTableExtra(myDb *sql.DB, tableName, dbName string) Tabl
 	}
 }
 
+// get table cols from database
 func (*schemaService) GetTableCols(myDb *sql.DB, tableName, dbName string) []TableCol {
 	if myDb == nil || len(tableName) < 1 || len(dbName) < 1 {
 		return nil
@@ -144,6 +146,7 @@ func (*schemaService) GetTableCols(myDb *sql.DB, tableName, dbName string) []Tab
 	return cols
 }
 
+// get table indexes from database
 func (*schemaService) GetTableIndexes(myDb *sql.DB, tableName, dbName string) []TableIndex {
 	rows := query(myDb, tableName, dbName, tableIndexes)
 	defer rows.Close()
@@ -160,6 +163,7 @@ func (*schemaService) GetTableIndexes(myDb *sql.DB, tableName, dbName string) []
 	return indexes
 }
 
+// query data from db
 func query(myDb *sql.DB, tableName, dbName, sqlTemplate string) *sql.Rows {
 	q := fmt.Sprintf(sqlTemplate, dbName, tableName)
 	rows, err := myDb.Query(q)
@@ -169,6 +173,7 @@ func query(myDb *sql.DB, tableName, dbName, sqlTemplate string) *sql.Rows {
 	return rows
 }
 
+// construct create table ddl from table definition
 func (ss *schemaService) GetCreateTableSql(def TableDefinition) string {
 	if len(def.TableName) < 1 {
 		return ""
@@ -306,7 +311,7 @@ func constructTableIndexFromTableIndex(indexes []TableIndex) string {
 					keyVal += ","
 				}
 			}
-			if len(keyVal)> 0 {
+			if len(keyVal) > 0 {
 				result += fmt.Sprintf(pkTmpl, idxPrefix, keyVal)
 			}
 		} else {

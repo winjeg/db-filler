@@ -8,7 +8,6 @@ import (
 
 var logger = log.GetLogger(config.GetConf())
 
-
 // get logger
 func GetLogger() *logrus.Logger {
 	return logger
