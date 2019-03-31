@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	lock sync.Mutex
+	lock = sync.Mutex{}
 	// use two lock to write file
-	errorFileLock sync.Mutex
-	sqlFileLock   sync.Mutex
+	errorFileLock = sync.Mutex{}
+	sqlFileLock   = sync.Mutex{}
 
 	// none nil values should prove this is enabled
 	ErrorFileStore, _ = NewFileStore(conf.ExtraSettings.ErrorFile, errorFileLock)
@@ -22,6 +22,7 @@ var (
 
 type fileStore struct {
 	File *os.File
+	Lock sync.Mutex
 }
 
 // new file store, we only need to append to current file
@@ -32,6 +33,7 @@ func NewFileStore(file string, lock sync.Mutex) (*fileStore, error) {
 	}
 	return &fileStore{
 		File: f,
+		Lock: lock,
 	}, nil
 }
 
@@ -40,9 +42,9 @@ func NewFileStore(file string, lock sync.Mutex) (*fileStore, error) {
 func (fs *fileStore) Append(c string) error {
 	timeInfo := fmt.Sprintf("-- %s\n", time.Now().Format(generator.TimeFormat))
 	toWrite := timeInfo + c + "\n"
-	lock.Lock()
+	fs.Lock.Lock()
 	_, err := fs.File.Write([]byte(toWrite))
-	lock.Unlock()
+	fs.Lock.Unlock()
 	if err != nil {
 		return err
 	}
