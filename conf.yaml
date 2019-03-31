@@ -1,0 +1,28 @@
+database:
+  dbName: test
+  host: 172.17.0.2
+  port: 3306
+  username: testuser
+  password: 123456
+  dbType: mysql
+  maxConn: 100
+  idleConn: 10
+
+worker:
+  tableName: person
+  sqlNum: 10
+  generateWorkerNum: 10
+  insertWorkerNum: 10
+  ddlWorkerNum: 10
+  rowNum: 1
+extra:
+  sql: "SELECT 1"
+  errorFile: error.sql
+  sqlFile: insert.sql
+  onlyGenerate: false
+
+log:
+  level: info
+  format: colored
+  output: std
+  report-caller: true
