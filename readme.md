@@ -8,6 +8,7 @@
 db-filler is a program to fill database table with randomly generated data, 
 with the program you can fill a table rapidly and easily.
 
+![demo](https://user-images.githubusercontent.com/7270177/55327676-2e121580-54bd-11e9-8def-9a5c23f73f16.gif)
 
 ## feature list
 1. auto generate insert sql using multi go routines, user can specify how many sql to generate

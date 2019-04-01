@@ -3,9 +3,7 @@ package schema
 import (
 	"fmt"
 	"github.com/winjeg/db-filler/generator"
-	"math/rand"
 	"strings"
-	"time"
 )
 
 const (
@@ -130,7 +128,6 @@ func (td *TableDefinition) GenerateInsert(n int) string {
 	if n < 1 {
 		n = 1
 	}
-	rand.Seed(time.Now().UnixNano())
 	return td.genInsertDef() + "\n" + td.genValues(n) + ";"
 }
 

@@ -32,15 +32,17 @@ var (
 // random int, returns possibly negative value or positive value
 // including the limit, and negative values, the arg limit should be positive
 func RandomInt(limit int64) int64 {
+	rd := newRand()
 	if RandomBool() {
-		return -rand.Int63n(limit) - 2
+		return -rd.Int63n(limit) - 2
 	}
-	return rand.Int63n(limit) + 1
+	return rd.Int63n(limit) + 1
 }
 
 // random unsigned int, positive value only
 func RandomUInt(limit uint64) uint64 {
-	r := rand.Uint64()
+	rd := newRand()
+	r := rd.Uint64()
 	if r > limit {
 		return r % limit
 	}
@@ -49,12 +51,14 @@ func RandomUInt(limit uint64) uint64 {
 
 // random bool
 func RandomBool() bool {
-	return rand.Intn(2) == 1
+	rd := newRand()
+	return rd.Intn(2) == 1
 }
 
 // return a random double, limit is the max value
 // part return 0 for illegal values
 func RandomFloat(n, f int) string {
+	rd := newRand()
 	if n <= 0 {
 		n = 0
 	}
@@ -64,10 +68,10 @@ func RandomFloat(n, f int) string {
 	partN := make([]byte, n)
 	partF := make([]byte, f)
 	for i := 0; i < n; i++ {
-		partN[i] = byte(rand.Intn(10) + 48)
+		partN[i] = byte(rd.Intn(10) + 48)
 	}
 	for i := 0; i < f; i++ {
-		partF[i] = byte(rand.Intn(10) + 48)
+		partF[i] = byte(rd.Intn(10) + 48)
 	}
 	if n == 0 && f == 0 {
 		return "0.0"
@@ -97,18 +101,20 @@ func RandomBits(n int) string {
 // for utf-8 is a mutable length charset
 // so the result length may not actually equals to the size specified
 func RandomCJK(size int) string {
+	rd := newRand()
 	result := make([]rune, size)
 	for i := range result {
-		result[i] = rune(RandIntSection(cjkStart, cjkStop))
+		result[i] = rune(RandIntSection(cjkStart, cjkStop, rd))
 	}
 	return string(result)
 }
 
 // random ascii
 func RandomASCII(size int) string {
+	rd := newRand()
 	result := make([]byte, size)
 	for i := range result {
-		result[i] = byte(RandIntSection(0, 128))
+		result[i] = byte(RandIntSection(0, 128, rd))
 	}
 	return string(result)
 }
@@ -119,6 +125,17 @@ func RandomReadable(size int) string {
 }
 
 // random int section
-func RandIntSection(min, max int64) int64 {
-	return min + rand.Int63n(max-min)
+func RandIntSection(min, max int64, rd *rand.Rand) int64 {
+	return min + rd.Int63n(max-min)
+}
+
+func newRand() *rand.Rand {
+	return rd
+}
+
+// use singleton
+var rd = newRander()
+
+func newRander() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
