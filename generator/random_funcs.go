@@ -94,7 +94,10 @@ func RandomTime() time.Time {
 func RandomBits(n int) string {
 	num := RandomUInt(math.MaxUint64) + math.MaxUint64>>2
 	bits := fmt.Sprintf("%b", num)
-	return bits[:n]
+	if len(bits) > n {
+		return bits[:n]
+	}
+	return bits[:rd.Intn(len(bits))]
 }
 
 // random CJK in UTF8
