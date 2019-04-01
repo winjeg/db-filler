@@ -2,7 +2,6 @@ package generator
 
 import (
 	"fmt"
-	"github.com/winjeg/go-commons/str"
 	"math"
 	"math/rand"
 	"time"
@@ -32,7 +31,7 @@ var (
 // random int, returns possibly negative value or positive value
 // including the limit, and negative values, the arg limit should be positive
 func RandomInt(limit int64) int64 {
-	result := rand.Int63n(limit) - 2
+	result := rd.Int63n(limit) - 2
 	if RandomBool() {
 		return -result
 	}
@@ -41,7 +40,7 @@ func RandomInt(limit int64) int64 {
 
 // random unsigned int, positive value only
 func RandomUInt(limit uint64) uint64 {
-	r := rand.Uint64()
+	r := rd.Uint64()
 	if r > limit {
 		return r % limit
 	}
@@ -50,7 +49,7 @@ func RandomUInt(limit uint64) uint64 {
 
 // random bool
 func RandomBool() bool {
-	result := rand.Intn(2) == 1
+	result := rd.Intn(2) == 1
 	return result
 }
 
@@ -66,10 +65,10 @@ func RandomFloat(n, f int) string {
 	partN := make([]byte, n)
 	partF := make([]byte, f)
 	for i := 0; i < n; i++ {
-		partN[i] = byte(rand.Intn(10) + 48)
+		partN[i] = byte(rd.Intn(10) + 48)
 	}
 	for i := 0; i < f; i++ {
-		partF[i] = byte(rand.Intn(10) + 48)
+		partF[i] = byte(rd.Intn(10) + 48)
 	}
 	if n == 0 && f == 0 {
 		return "0.0"
@@ -95,7 +94,7 @@ func RandomBits(n int) string {
 	if len(bits) > n {
 		return bits[:n]
 	}
-	return bits[:rand.Intn(len(bits))]
+	return bits[:rd.Intn(len(bits))]
 }
 
 // random CJK in UTF8
@@ -120,14 +119,46 @@ func RandomASCII(size int) string {
 
 // random readable string
 func RandomReadable(size int) string {
-	return str.RandomStrWithSpecialChars(size)
+	return string(RandStr(size, KindAllWithSpecial))
 }
 
 // random int section
 func RandIntSection(min, max int64) int64 {
-	return min + rand.Int63n(max-min)
+	return min + rd.Int63n(max-min)
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
+func RandStr(size int, kind int) []byte {
+	kinds := [][]int{{10, 48}, {26, 97}, {26, 65}}
+	specialChars := []byte{95, 45, 46, 35, 36, 37, 38}
+	specialCharLen := len(specialChars)
+	iKind, result := kind, make([]byte, size)
+	isAll := kind == 3
+	for i := 0; i < size; i++ {
+
+		// random iKind
+		if isAll {
+			iKind = rand.Intn(3)
+		}
+		if kind == KindAllWithSpecial {
+			iKind = rand.Intn(4)
+		}
+		if iKind == 3 {
+			result[i] = specialChars[rand.Intn(specialCharLen)]
+		} else {
+			scope, base := kinds[iKind][0], kinds[iKind][1]
+			result[i] = uint8(base + rand.Intn(scope))
+		}
+	}
+	return result
+}
+
+const (
+	KindAllWithSpecial = 4
+)
+
+// the rand instance, to improve efficiency
+var rd = NewRand()
+
+func NewRand() *rand.Rand {
+	return rand.New(&LockedSource{src: rand.NewSource(time.Now().UnixNano()).(Source64)})
 }
