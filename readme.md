@@ -1,7 +1,7 @@
 # db-filler
 [![Build Status](https://travis-ci.org/winjeg/db-filler.svg?branch=master)](https://travis-ci.org/winjeg/db-filler)
 [![Go Report Card](https://goreportcard.com/badge/github.com/winjeg/db-filler)](https://goreportcard.com/report/github.com/winjeg/db-filler)
-[![GolangCI](https://golangci.com/badges/github.com/winjeg/db-filler.svg)](https://golangci.com/r/github.com/winjeg/openapi)
+[![GolangCI](https://golangci.com/badges/github.com/winjeg/db-filler.svg)](https://golangci.com/r/github.com/winjeg/db-filler)
 [![codecov](https://codecov.io/gh/winjeg/db-filler/branch/master/graph/badge.svg)](https://codecov.io/gh/winjeg/db-filler)
 
 
