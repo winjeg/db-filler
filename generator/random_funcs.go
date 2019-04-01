@@ -5,6 +5,7 @@ import (
 	"github.com/winjeg/go-commons/str"
 	"math"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -33,16 +34,23 @@ var (
 // including the limit, and negative values, the arg limit should be positive
 func RandomInt(limit int64) int64 {
 	rd := newRand()
+	var lock sync.Mutex
+	lock.Lock()
+	result := rd.Int63n(limit) - 2
+	lock.Unlock()
 	if RandomBool() {
-		return -rd.Int63n(limit) - 2
+		return -result
 	}
-	return rd.Int63n(limit) + 1
+	return result
 }
 
 // random unsigned int, positive value only
 func RandomUInt(limit uint64) uint64 {
 	rd := newRand()
+	var lock sync.Mutex
+	lock.Lock()
 	r := rd.Uint64()
+	lock.Unlock()
 	if r > limit {
 		return r % limit
 	}
@@ -52,7 +60,11 @@ func RandomUInt(limit uint64) uint64 {
 // random bool
 func RandomBool() bool {
 	rd := newRand()
-	return rd.Intn(2) == 1
+	var lock sync.Mutex
+	lock.Lock()
+	result := rd.Intn(2) == 1
+	lock.Unlock()
+	return result
 }
 
 // return a random double, limit is the max value
@@ -65,14 +77,17 @@ func RandomFloat(n, f int) string {
 	if f <= 0 {
 		f = 0
 	}
+	var lock sync.Mutex
 	partN := make([]byte, n)
 	partF := make([]byte, f)
+	lock.Lock()
 	for i := 0; i < n; i++ {
 		partN[i] = byte(rd.Intn(10) + 48)
 	}
 	for i := 0; i < f; i++ {
 		partF[i] = byte(rd.Intn(10) + 48)
 	}
+	lock.Unlock()
 	if n == 0 && f == 0 {
 		return "0.0"
 	}
@@ -106,9 +121,12 @@ func RandomBits(n int) string {
 func RandomCJK(size int) string {
 	rd := newRand()
 	result := make([]rune, size)
+	var lock sync.Mutex
+	lock.Lock()
 	for i := range result {
 		result[i] = rune(RandIntSection(cjkStart, cjkStop, rd))
 	}
+	lock.Unlock()
 	return string(result)
 }
 
@@ -116,9 +134,12 @@ func RandomCJK(size int) string {
 func RandomASCII(size int) string {
 	rd := newRand()
 	result := make([]byte, size)
+	var lock sync.Mutex
+	lock.Lock()
 	for i := range result {
 		result[i] = byte(RandIntSection(0, 128, rd))
 	}
+	lock.Unlock()
 	return string(result)
 }
 
