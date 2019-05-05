@@ -45,11 +45,7 @@ func (t *TableCol) GetValue() string {
 			return generator.IntRander.Get(generator.TypeMediumInt)
 		case typeBigInt:
 			return generator.IntRander.Get(generator.TypeBigInt)
-		case typeDouble:
-			fallthrough
-		case typeFloat:
-			fallthrough
-		case typeDecimal:
+		case typeDouble, typeFloat, typeDecimal:
 			return generator.FloatRander.Get(int(*t.NumPrecision)-int(*t.NumScale), int(*t.NumScale))
 		default:
 			return generator.IntRander.Get(generator.TypeUTinyInt)
@@ -73,21 +69,9 @@ func (t *TableCol) GetValue() string {
 			return randomFloatStr(generator.FloatRander.GetFloat(int(*t.NumPrecision)-int(*t.NumScale), int(*t.NumScale)))
 		case typeDecimal:
 			return randomFloatStr(generator.FloatRander.GetFloat(int(*t.NumPrecision)-int(*t.NumScale), int(*t.NumScale)))
-		case typeText:
-			fallthrough
-		case typeLongText:
-			fallthrough
-		case typeTinyText:
-			fallthrough
-		case typeMediumText:
-			fallthrough
-		case typeChar:
-			fallthrough
-		case typeVarchar:
+		case typeText, typeLongText, typeTinyText, typeMediumText, typeChar, typeVarchar:
 			return randomStr(uint(*t.CharMaxLen))
-		case typeDateTime:
-			fallthrough
-		case typeTimestamp:
+		case typeTimestamp, typeDateTime:
 			return generator.TimeRander.Get()
 		case typeBit:
 			return generator.BitRander.Get(int(*t.NumPrecision))
