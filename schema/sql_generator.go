@@ -164,11 +164,11 @@ func (td *TableDefinition) GenerateAlter() []string {
 		tableIndexes = append(tableIndexes, lastIndex)
 		td.Cols = nil
 		td.Indexes = tableIndexes
-		sql1 := SchemaService.GetAlterTableSql(*td) + ";"
+		sql1 := td.GetAlterTableSql() + ";"
 		td.Indexes[0].Action = &actionAdd
 		td.Cols = nil
 		td.Indexes = tableIndexes
-		sql2 := SchemaService.GetAlterTableSql(*td) + "';"
+		sql2 := td.GetAlterTableSql() + "';"
 
 		result = append(result, sql1, sql2)
 	}
@@ -179,11 +179,11 @@ func (td *TableDefinition) GenerateAlter() []string {
 		tableCols = append(tableCols, lastCol)
 		td.Cols = tableCols
 		td.Indexes = nil
-		sql1 := SchemaService.GetAlterTableSql(*td) + ";"
+		sql1 := td.GetAlterTableSql() + ";"
 		tableCols[0].Action = &actionAdd
 		td.Cols = tableCols
 		td.Indexes = nil
-		sql2 := SchemaService.GetAlterTableSql(*td) + ";"
+		sql2 := td.GetAlterTableSql() + ";"
 		result = append(result, sql1, sql2)
 	}
 	return result

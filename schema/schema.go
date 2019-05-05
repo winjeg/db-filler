@@ -174,31 +174,31 @@ func query(myDb *sql.DB, tableName, dbName, sqlTemplate string) *sql.Rows {
 }
 
 // construct create table ddl from table definition
-func (ss *schemaService) GetCreateTableSql(def TableDefinition) string {
-	if len(def.TableName) < 1 {
+func (td *TableDefinition) GetCreateTableSql() string {
+	if len(td.TableName) < 1 {
 		return ""
 	}
-	result := fmt.Sprintf("CREATE TABLE `%s`(\n", def.TableName)
-	cols := def.Cols
+	result := fmt.Sprintf("CREATE TABLE `%s`(\n", td.TableName)
+	cols := td.Cols
 	for _, v := range cols {
 		result += constructTableColSqlFromColDefinition(v) + ",\n"
 	}
-	if len(def.Indexes) < 1 {
+	if len(td.Indexes) < 1 {
 		r := strings.TrimSpace(result)
 		if strings.LastIndex(r, ",") == len(r)-1 {
 			result = r[0 : len(r)-1]
 		}
 	}
-	result += constructTableIndexFromTableIndex(def.Indexes)
+	result += constructTableIndexFromTableIndex(td.Indexes)
 	if strings.Index(result, ",") == len(result)-1 {
 		result = result[:len(result)-1]
 	}
 	var autoIncSql string
-	if def.Extra.AutoIncrement != nil {
-		autoIncSql = fmt.Sprintf("AUTO_INCREMENT=%d ", *def.Extra.AutoIncrement)
+	if td.Extra.AutoIncrement != nil {
+		autoIncSql = fmt.Sprintf("AUTO_INCREMENT=%d ", *td.Extra.AutoIncrement)
 	}
 	extra := fmt.Sprintf(") ENGINE=InnoDB %s DEFAULT CHARSET=utf8 COMMENT='%s'",
-		autoIncSql, def.Extra.TableComment)
+		autoIncSql, td.Extra.TableComment)
 	return result + extra
 }
 
@@ -361,31 +361,31 @@ func constructTableIndexFromTableIndex(indexes []TableIndex) string {
 }
 
 // get alter table sql from table definition
-func (ss *schemaService) GetAlterTableSql(def TableDefinition) string {
-	if def.Cols == nil && def.Indexes == nil && def.Extra.Action == nil {
+func (td *TableDefinition) GetAlterTableSql() string {
+	if td.Cols == nil && td.Indexes == nil && td.Extra.Action == nil {
 		return ""
 	}
 
 	// header
-	result := fmt.Sprintf("ALTER TABLE `%s`\n", def.TableName)
+	result := fmt.Sprintf("ALTER TABLE `%s`\n", td.TableName)
 
 	// the columns
-	if len(def.Cols) > 0 {
-		for _, v := range def.Cols {
+	if len(td.Cols) > 0 {
+		for _, v := range td.Cols {
 			result += constructTableColSqlFromColDefinition(v) + ",\n"
 		}
 	}
 	// indexes
-	if len(def.Indexes) > 0 {
-		result += constructTableIndexFromTableIndex(def.Indexes) + ","
+	if len(td.Indexes) > 0 {
+		result += constructTableIndexFromTableIndex(td.Indexes) + ","
 	}
 	// table comments
-	if len(def.Extra.TableComment) > 0 {
-		result += fmt.Sprintf("COMMENT='%s',", def.Extra.TableComment)
+	if len(td.Extra.TableComment) > 0 {
+		result += fmt.Sprintf("COMMENT='%s',", td.Extra.TableComment)
 	}
 	// auto increment
-	if def.Extra.AutoIncrement != nil && *def.Extra.AutoIncrement > 0 {
-		result += fmt.Sprintf("AUTO_INCREMENT=%d;", *def.Extra.AutoIncrement)
+	if td.Extra.AutoIncrement != nil && *td.Extra.AutoIncrement > 0 {
+		result += fmt.Sprintf("AUTO_INCREMENT=%d;", *td.Extra.AutoIncrement)
 	}
 	result = strings.TrimSpace(result)
 	if strings.LastIndex(result, ",") == len(result)-1 {
