@@ -57,8 +57,8 @@ func TestSchemaService(t *testing.T) {
 	td.TableName += "_test"
 	td2 := TableDefinition(td)
 	td2.Indexes = nil
-	SchemaService.GetCreateTableSql(td2)
-	sql := SchemaService.GetCreateTableSql(td)
+	td.GetCreateTableSql()
+	sql := td.GetCreateTableSql()
 	_, _, err = store.GetFromResult(db.Exec(sql))
 	assert.Nil(t, err)
 	_, _, err = store.GetFromResult(db.Exec(fmt.Sprintf("DROP TABLE %s", td.TableName)))
@@ -78,14 +78,14 @@ func TestSchemaService(t *testing.T) {
 
 	td.Cols = tableCols
 	td.Indexes = tableIndexes
-	alterSql := SchemaService.GetAlterTableSql(td)
+	alterSql := td.GetAlterTableSql()
 	_, _, err = store.GetFromResult(db.Exec(alterSql))
 	assert.Nil(t, err)
 
 	// add back col and index
 	tableIndexes[0].Action = &actionAdd
 	tableCols[0].Action = &actionAdd
-	alterAddSql := SchemaService.GetAlterTableSql(td)
+	alterAddSql := td.GetAlterTableSql()
 	_, _, err = store.GetFromResult(db.Exec(alterAddSql))
 	assert.Nil(t, err)
 	_, err = db.Exec(fmt.Sprintf("DROP TABLE %s", "user_info"))
