@@ -12,7 +12,7 @@ import (
 
 var (
 	db  = store.GetDb()
-	tsc = SchemaService.GetTableDefinition(db, "person", "test")
+	tsc = SchemaService.GetTableDefinition(db, "label", "test")
 )
 
 func BenchmarkTableDefinition_GenerateInsert(b *testing.B) {
@@ -43,7 +43,7 @@ const testCreateSql = `
 		  UNIQUE KEY idx_id (id),
 		  KEY idx_name (name),
 		  KEY idx_name_deleted (name) USING BTREE
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='table for person information'
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='table for label information'
 	`
 
 func TestSchemaService(t *testing.T) {
@@ -93,7 +93,7 @@ func TestSchemaService(t *testing.T) {
 }
 
 func TestTableDefinition_GenerateAlter(t *testing.T) {
-	td := SchemaService.GetTableDefinition(db, "person", "test")
+	td := SchemaService.GetTableDefinition(db, "label", "test")
 	r := td.GenerateAlter()
 	assert.NotEmpty(t, r)
 }
