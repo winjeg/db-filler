@@ -4,7 +4,6 @@
 [![GolangCI](https://golangci.com/badges/github.com/winjeg/db-filler.svg)](https://golangci.com/r/github.com/winjeg/db-filler)
 [![codecov](https://codecov.io/gh/winjeg/db-filler/branch/master/graph/badge.svg)](https://codecov.io/gh/winjeg/db-filler)
 
-
 db-filler is a program to fill database table with randomly generated data, 
 with the program you can fill a table rapidly and easily.
 
@@ -17,8 +16,6 @@ with the program you can fill a table rapidly and easily.
 4. execute fill table operation using multi go routines
 5. save the execution error into a user defined file
 6. only do insert sql generation, and don't do insertion
-
-
 
 ## how to use
 
